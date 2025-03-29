@@ -1,27 +1,83 @@
 <?php
-$messageSent = false;
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contact_form'])) {
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-    $message = htmlspecialchars($_POST['message']);
-    
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    if (!empty($name) && !empty($email) && !empty($message)) {
-        $to = "kritarthranjan5053@gmail.com";
-        $subject = "New Portfolio Contact: $name";
-        $headers = "From: $email";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/phpmailer/phpmailer/src/Exception.php';
+require 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require 'vendor/phpmailer/phpmailer/src/SMTP.php';
+
+session_start();
+
+if (isset($_SESSION['form_success_time']) && (time() - $_SESSION['form_success_time']) > 10) {
+    unset($_SESSION['form_success']);
+    unset($_SESSION['form_success_time']);
+}
+
+$messageSent = isset($_SESSION['form_success']) ? $_SESSION['form_success'] : false;
+$formDisabled = $messageSent && (time() - $_SESSION['form_success_time']) <= 10;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contact_form'])) {
+    $name = htmlspecialchars(trim($_POST['name']));
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $country_code = htmlspecialchars(trim($_POST['country_code']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $message = htmlspecialchars(trim($_POST['message']));
+    
+    if (!empty($name) && !empty($email) && !empty($message) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $mail = new PHPMailer(true);
         
-        // Send email (for production, consider using PHPMailer)
-        if (mail($to, $subject, $message, $headers)) {
-            $messageSent = true;
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'kritarthranjan2@gmail.com';  // Sender
+            $mail->Password = 'oygb wdyi gxdr sxpb';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Email Content
+            $mail->setFrom('kritarthranjan2@gmail.com', 'Portfolio Contact Form');
+            $mail->addAddress('kritarthranjan5053@gmail.com');   // Reciver
+            $mail->addReplyTo($email, $name);
+            
+            $mail->isHTML(true);
+            $mail->Subject = "New Contact from Portfolio: $name";
+            $mail->Body = "
+                <h2>New Contact Form Submission</h2>
+                <p><strong>Name:</strong> $name</p>
+                <p><strong>Email:</strong> $email</p>
+                <p><strong>Phone:</strong> $country_code $phone</p>
+                <p><strong>Message:</strong></p>
+                <p>$message</p>
+            ";
+            $mail->AltBody = "Name: $name\nEmail: $email\nPhone: $country_code $phone\nMessage:\n$message";
+            
+            if ($mail->send()) {
+                $_SESSION['form_success'] = true;
+                $_SESSION['form_success_time'] = time();
+                header("Location: ".$_SERVER['PHP_SELF']."#contact");
+                exit();
+            } else {
+                error_log("Mailer Error: " . $mail->ErrorInfo);
+                echo "<script>console.error('Mailer Error: " . addslashes($mail->ErrorInfo) . "');</script>";
+            }
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            echo "<script>console.error('Error: " . addslashes($e->getMessage()) . "');</script>";
         }
     }
 }
+
 
 $dob = new DateTime('2004-10-29');
 $today = new DateTime();
 $age = $today->diff($dob)->y;
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +88,20 @@ $age = $today->diff($dob)->y;
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script>
+        // Automatically hide success message and show form after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMessage = document.querySelector('.form-success');
+            const contactForm = document.querySelector('.contact-form form');
+            
+            if (successMessage && successMessage.style.display === 'block') {
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    if (contactForm) contactForm.style.display = 'block';
+                }, 10000);
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -750,25 +820,43 @@ $age = $today->diff($dob)->y;
                     </div>
                 </div>
                 
+                <!-- In your contact section -->
                 <div class="contact-form">
-                    <?php if ($messageSent): ?>
+                    <?php if ($messageSent && !$formDisabled): ?>
                         <div class="form-success">
                             <p>Thank you for your message! I'll get back to you soon.</p>
                         </div>
-                    <?php else: ?>
-                        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#contact" method="POST">
-                            <input type="hidden" name="contact_form" value="1">
-                            <div class="form-group">
-                                <input type="text" name="name" placeholder="Your Name" required>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" name="email" placeholder="Your Email" required>
-                            </div>
-                            <div class="form-group">
-                                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
+                    <?php endif; ?>
+                    
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>#contact" method="POST" style="<?php echo $formDisabled ? 'display:none;' : 'display:block;' ?>">
+                        <input type="hidden" name="contact_form" value="1">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group phone-input-group">
+                            <input type="text" name="country_code" class="country-code" placeholder="+91" value="+91">
+                            <input type="tel" name="phone" class="phone-number" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                    
+                    <?php if ($formDisabled): ?>
+                        <div class="form-success">
+                            <p>Thank you for your message! I'll get back to you soon.</p>
+                        </div>
+                        <script>
+                            // Show form after 10 seconds
+                            setTimeout(function() {
+                                document.querySelector('.contact-form form').style.display = 'block';
+                                document.querySelector('.contact-form .form-success').style.display = 'none';
+                            }, 10000);
+                        </script>
                     <?php endif; ?>
                 </div>
             </div>

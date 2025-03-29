@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add animation to elements when they come into view
     const animateOnScroll = function() {
         const elements = document.querySelectorAll('.section-title, .project-card, .about-content, .contact-container, .qualification-data, .skills-content, .research-card');
         
@@ -114,22 +113,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
     
-    // Set initial state for animated elements
     document.querySelectorAll('.section-title, .project-card, .about-content, .contact-container, .qualification-data, .skills-content, .research-card').forEach(element => {
         element.style.opacity = '0';
         element.style.transform = 'translateY(30px)';
         element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     });
     
-    // Run once on load
     animateOnScroll();
     
-    // Run on scroll
     window.addEventListener('scroll', animateOnScroll);
     
-    // Dynamic year in footer
     const yearElement = document.querySelector('.footer p');
     if (yearElement) {
         yearElement.textContent = `© ${new Date().getFullYear()} Kritarth Ranjan. All rights reserved.`;
+    }
+
+    const successMessage = document.querySelector('.form-success');
+    const contactForm = document.querySelector('.contact-form form');
+    
+    if (successMessage && contactForm) {
+        const formWasSubmitted = <?php echo isset($formDisabled) && $formDisabled ? 'true' : 'false'; ?>;
+        
+        if (formWasSubmitted) {
+            const submissionTime = <?php echo isset($_SESSION['form_success_time']) ? $_SESSION['form_success_time'] : '0'; ?>;
+            const currentTime = Math.floor(Date.now() / 1000);
+            const timeRemaining = 10 - (currentTime - submissionTime);
+            
+            if (timeRemaining > 0) {
+                contactForm.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    contactForm.style.display = 'block';
+                }, timeRemaining * 1000);
+            } else {
+                contactForm.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+        }
     }
 });
