@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contact_form'])) {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'kritarthranjan2@gmail.com';  // Sender
-            $mail->Password = 'oygb wdyi gxdr sxpb';
+            $mail->Password = 'abcd efgh ijkl mnop';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
