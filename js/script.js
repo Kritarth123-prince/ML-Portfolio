@@ -1,38 +1,53 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Typing Effect
     const typingText = document.getElementById('typing-text');
-    const textToType = "Hello, I'm Kritarth Ranjan";
-    let charIndex = 0;
-    
-    function typeWriter() {
-        if (charIndex < textToType.length) {
-            typingText.textContent += textToType.charAt(charIndex);
-            charIndex++;
-            setTimeout(typeWriter, 100);
-        } else {
-            document.querySelector('.typed-cursor').style.display = 'none';
+    if (typingText) {
+        const fullText = "Hello, I'm Kritarth Ranjan";
+        const nameStart = fullText.indexOf("Kritarth Ranjan");
+        let charIndex = 0;
+        let nameSpan = null;
+
+        function typeWriter() {
+            if (charIndex < fullText.length) {
+                if (charIndex === nameStart && !nameSpan) {
+                    nameSpan = document.createElement('span');
+                    nameSpan.className = 'name-highlight';
+                    typingText.appendChild(nameSpan);
+                }
+
+                const currentChar = fullText.charAt(charIndex);
+                if (charIndex >= nameStart && nameSpan) {
+                    nameSpan.textContent += currentChar;
+                } else {
+                    typingText.textContent += currentChar;
+                }
+
+                charIndex++;
+                setTimeout(typeWriter, 100);
+            } else {
+                const cursor = document.querySelector('.typed-cursor');
+                if (cursor) cursor.style.display = 'none';
+            }
         }
+
+        typingText.textContent = '';
+        typeWriter();
     }
-    
-    typeWriter();
     
     // Qualification Tabs
     const tabButtons = document.querySelectorAll('.qualification-button');
     const tabContents = document.querySelectorAll('.qualification-content');
     
     function showTab(tabId) {
-        // Hide all tab contents
         tabContents.forEach(content => {
             content.classList.remove('qualification-active');
         });
         
-        // Show the selected tab content
         const selectedTab = document.querySelector(tabId);
         if (selectedTab) {
             selectedTab.classList.add('qualification-active');
         }
         
-        // Update active tab button
         tabButtons.forEach(button => {
             button.classList.remove('qualification-active');
             if (button.getAttribute('data-target') === tabId) {
@@ -41,10 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Set initial active tab
     showTab('#work');
     
-    // Add click event listeners to tab buttons
     tabButtons.forEach(button => {
         button.addEventListener('click', function() {
             const targetTab = this.getAttribute('data-target');
@@ -53,28 +66,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Skills Toggle
-    const skillsContent = document.getElementsByClassName('skills-content');
+    const skillsHeaders = document.querySelectorAll('.skills-header');
     
-    for (let i = 0; i < skillsContent.length; i++) {
-        skillsContent[i].addEventListener('click', function() {
-            const skillsList = this.lastElementChild;
-            const skillsArrow = this.querySelector('.skills-arrow');
+    skillsHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.parentElement;
+            content.classList.toggle('skills-open');
+            content.classList.toggle('skills-close');
             
-            if (this.classList.contains('skills-close')) {
-                this.classList.remove('skills-close');
-                this.classList.add('skills-open');
-                skillsList.style.height = skillsList.scrollHeight + 'px';
-                skillsArrow.style.transform = 'rotate(-180deg)';
-            } else {
-                this.classList.remove('skills-open');
-                this.classList.add('skills-close');
-                skillsList.style.height = '0';
-                skillsArrow.style.transform = 'rotate(0)';
+            const arrow = this.querySelector('.skills-arrow');
+            if (arrow) {
+                arrow.style.transform = content.classList.contains('skills-open') ? 'rotate(-180deg)' : 'rotate(0)';
             }
         });
-    }
+    });
     
-    // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -89,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     behavior: 'smooth'
                 });
                 
-                // Update URL without page jump
                 if (history.pushState) {
                     history.pushState(null, null, targetId);
                 } else {
@@ -120,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     animateOnScroll();
-    
     window.addEventListener('scroll', animateOnScroll);
     
     const yearElement = document.querySelector('.footer p');
@@ -128,29 +132,96 @@ document.addEventListener('DOMContentLoaded', function() {
         yearElement.textContent = `© ${new Date().getFullYear()} Kritarth Ranjan. All rights reserved.`;
     }
 
-    const successMessage = document.querySelector('.form-success');
-    const contactForm = document.querySelector('.contact-form form');
+    // Research Papers Scroll
+    const researchContainer = document.querySelector('.research-container');
+    const researchScrollLeftBtn = document.querySelector('.research-scroll-btn.left');
+    const researchScrollRightBtn = document.querySelector('.research-scroll-btn.right');
     
-    if (successMessage && contactForm) {
-        const formWasSubmitted = <?php echo isset($formDisabled) && $formDisabled ? 'true' : 'false'; ?>;
+    if (researchContainer && researchScrollLeftBtn && researchScrollRightBtn) {
+        const researchCards = document.querySelectorAll('.research-card');
+        const minCardsForScroll = 4;
         
-        if (formWasSubmitted) {
-            const submissionTime = <?php echo isset($_SESSION['form_success_time']) ? $_SESSION['form_success_time'] : '0'; ?>;
-            const currentTime = Math.floor(Date.now() / 1000);
-            const timeRemaining = 10 - (currentTime - submissionTime);
+        const checkResearchScroll = () => {
+            const hasEnoughCards = researchCards.length >= minCardsForScroll;
+            const hasOverflow = researchContainer.scrollWidth > researchContainer.clientWidth;
             
-            if (timeRemaining > 0) {
-                contactForm.style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                setTimeout(function() {
-                    successMessage.style.display = 'none';
-                    contactForm.style.display = 'block';
-                }, timeRemaining * 1000);
-            } else {
-                contactForm.style.display = 'block';
-                successMessage.style.display = 'none';
+            const shouldShowButtons = hasEnoughCards && hasOverflow;
+            
+            researchScrollLeftBtn.classList.toggle('hidden', !shouldShowButtons);
+            researchScrollRightBtn.classList.toggle('hidden', !shouldShowButtons);
+            
+            researchScrollLeftBtn.classList.toggle('disabled', researchContainer.scrollLeft === 0);
+            researchScrollRightBtn.classList.toggle('disabled', 
+                researchContainer.scrollLeft + researchContainer.clientWidth >= researchContainer.scrollWidth - 1
+            );
+        };
+        
+        checkResearchScroll();
+        
+        researchScrollLeftBtn.addEventListener('click', () => {
+            researchContainer.scrollBy({ left: -350, behavior: 'smooth' });
+        });
+        
+        researchScrollRightBtn.addEventListener('click', () => {
+            researchContainer.scrollBy({ left: 350, behavior: 'smooth' });
+        });
+        
+        researchContainer.addEventListener('scroll', checkResearchScroll);
+        window.addEventListener('resize', checkResearchScroll);
+    }
+
+    // Projects Scroll
+    const projectsGrid = document.querySelector('.projects-grid');
+    const projectsScrollLeftBtn = document.querySelector('.projects-scroll-btn.left');
+    const projectsScrollRightBtn = document.querySelector('.projects-scroll-btn.right');
+    
+    if (projectsGrid && projectsScrollLeftBtn && projectsScrollRightBtn) {
+        const projectCards = document.querySelectorAll('.project-card');
+        const minCardsForScroll = 4;
+        
+        const checkProjectsScroll = () => {
+            const hasEnoughCards = projectCards.length >= minCardsForScroll;
+            const hasOverflow = projectsGrid.scrollWidth > projectsGrid.clientWidth;
+            
+            const shouldShowButtons = hasEnoughCards && hasOverflow;
+            
+            projectsScrollLeftBtn.classList.toggle('hidden', !shouldShowButtons);
+            projectsScrollRightBtn.classList.toggle('hidden', !shouldShowButtons);
+            
+            projectsScrollLeftBtn.classList.toggle('disabled', projectsGrid.scrollLeft === 0);
+            projectsScrollRightBtn.classList.toggle('disabled', 
+                projectsGrid.scrollLeft + projectsGrid.clientWidth >= projectsGrid.scrollWidth - 1
+            );
+        };
+        
+        checkProjectsScroll();
+        
+        projectsScrollLeftBtn.addEventListener('click', () => {
+            projectsGrid.scrollBy({ left: -350, behavior: 'smooth' });
+        });
+        
+        projectsScrollRightBtn.addEventListener('click', () => {
+            projectsGrid.scrollBy({ left: 350, behavior: 'smooth' });
+        });
+        
+        projectsGrid.addEventListener('scroll', checkProjectsScroll);
+        window.addEventListener('resize', checkProjectsScroll);
+        
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        projectsGrid.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        projectsGrid.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) {
+                projectsGrid.scrollBy({ left: 350, behavior: 'smooth' });
             }
-        }
+            if (touchEndX > touchStartX + 50) {
+                projectsGrid.scrollBy({ left: -350, behavior: 'smooth' });
+            }
+        }, false);
     }
 });
