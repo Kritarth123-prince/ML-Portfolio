@@ -104,6 +104,70 @@ $age = $today->diff($dob)->y;
     </script>
 </head>
 <body>
+    <!-- Added Header Section -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#" class="nav__logo"><i class="uil uil-circle"></i> Kritarth</a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="/php/Portfolio/" class="nav__link active-link">
+                            <i class="uil uil-estate nav__icon"></i> Home
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#about" class="nav__link">
+                            <i class="uil uil-user nav__icon"></i> About
+                        </a>
+                    </li>
+                    
+                    <li class="nav__item">
+                        <a href="#experience" class="nav__link">
+                            <i class="uil uil-briefcase-alt nav__icon"></i> Experience
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#skills" class="nav__link">
+                            <i class="uil uil-chart-pie-alt nav__icon"></i> Skills
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#research" class="nav__link">
+                            <i class="uil uil-flask nav__icon"></i> Research
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#projects" class="nav__link">
+                            <i class="uil uil-scenery nav__icon"></i> Projects
+                        </a>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="#contact" class="nav__link">
+                            <i class="uil uil-message nav__icon"></i> Contact
+                        </a>
+                    </li>
+
+                </ul>
+                
+                <i class="uil uil-times nav__close" id="nav-close"></i>
+            </div>
+
+            <div class="nav__btns">
+                <i class="uil uil-moon change-theme" id="theme-button"></i>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="uil uil-apps"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
     <div class="container">
         <!-- Hero Section -->
         <header class="hero">
@@ -146,7 +210,7 @@ $age = $today->diff($dob)->y;
                 <!-- Row 1 -->
                 <div class="skills-row">
                     <!-- Data Science & AI -->
-                    <div class="skills-content skills-open">
+                    <div class="skills-content skills-close">
                         <div class="skills-header">
                             <i class="uil uil-brain skills-icon"></i>
                             <div>
@@ -799,20 +863,17 @@ $age = $today->diff($dob)->y;
         </section>
 
         <!-- Projects Section -->
-        <!-- Projects Section -->
         <section class="section projects" id="projects">
             <h2 class="section-title">Featured Projects</h2>
-            
             <div class="projects-wrapper">
                 <button class="projects-scroll-btn left" aria-label="Scroll left">
                     <i class="fas fa-angle-left"></i>
                 </button>
-                
                 <div class="projects-grid">
                     <!-- Project 1 -->
                     <div class="project-card">
                         <div class="project-image">
-                            <img src="https://via.placeholder.com/400x300" alt="Project 1">
+                            <img src="https://img.icons8.com/dusk/64/group-of-projects.png" alt="Project 1" class="project-icon">
                         </div>
                         <div class="project-info">
                             <h3>Project Title 1</h3>
@@ -824,7 +885,7 @@ $age = $today->diff($dob)->y;
                     <!-- Project 2 -->
                     <div class="project-card">
                         <div class="project-image">
-                            <img src="https://via.placeholder.com/400x300" alt="Project 2">
+                            <img src="https://img.icons8.com/dusk/64/group-of-projects.png" alt="Project 2" class="project-icon">
                         </div>
                         <div class="project-info">
                             <h3>Project Title 2</h3>
@@ -836,7 +897,7 @@ $age = $today->diff($dob)->y;
                     <!-- Project 3 -->
                     <div class="project-card">
                         <div class="project-image">
-                            <img src="https://via.placeholder.com/400x300" alt="Project 3">
+                            <img src="https://img.icons8.com/dusk/64/group-of-projects.png" alt="Project 3" class="project-icon">
                         </div>
                         <div class="project-info">
                             <h3>Project Title 3</h3>
@@ -845,9 +906,10 @@ $age = $today->diff($dob)->y;
                         </div>
                     </div>
                     
+                    <!-- Project 4 -->
                     <div class="project-card">
                         <div class="project-image">
-                            <img src="https://via.placeholder.com/400x300" alt="Project 3">
+                            <img src="https://img.icons8.com/dusk/64/group-of-projects.png" alt="Project 4" class="project-icon">
                         </div>
                         <div class="project-info">
                             <h3>Project Title 4</h3>
@@ -856,9 +918,10 @@ $age = $today->diff($dob)->y;
                         </div>
                     </div>
 
+                    <!-- Project 5 -->
                     <div class="project-card">
                         <div class="project-image">
-                            <img src="https://via.placeholder.com/400x300" alt="Project 3">
+                            <img src="https://img.icons8.com/dusk/64/group-of-projects.png" alt="Project 5" class="project-icon">
                         </div>
                         <div class="project-info">
                             <h3>Project Title 5</h3>
@@ -866,9 +929,7 @@ $age = $today->diff($dob)->y;
                             <a href="#" class="project-link">View Project →</a>
                         </div>
                     </div>
-                    <!-- Add more projects as needed -->
                 </div>
-                
                 <button class="projects-scroll-btn right" aria-label="Scroll right">
                     <i class="fas fa-angle-right"></i>
                 </button>
@@ -910,7 +971,7 @@ $age = $today->diff($dob)->y;
                         <div class="form-group">
                             <input type="email" name="email" placeholder="Your Email" required>
                         </div>
-                        <div class="form-group phone-input-group">
+                        <div class="phone-input-group">
                             <input type="text" name="country_code" class="country-code" placeholder="+91" value="+91">
                             <input type="tel" name="phone" class="phone-number" placeholder="Phone Number">
                         </div>
