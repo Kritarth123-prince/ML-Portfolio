@@ -1,3 +1,15 @@
+const navLinks = document.querySelectorAll('.nav__link');
+
+navLinks.forEach(link => {
+  link.onclick = function () {
+    console.log("hello");
+    navLinks.forEach(l => l.classList.remove('active-link'));
+    this.classList.add('active-link');
+  };
+});
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Typing Effect
     const typingText = document.getElementById('typing-text');
