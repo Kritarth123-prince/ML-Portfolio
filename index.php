@@ -124,6 +124,15 @@ $age = $today->diff($dob)->y;
                             <i class="uil uil-user nav__icon"></i> About
                         </a>
                     </li>
+<<<<<<< HEAD
+=======
+
+                    <li class="nav__item">
+                        <a href="#experience" class="nav__link">
+                            <i class="uil uil-briefcase-alt nav__icon"></i> Experience
+                        </a>
+                    </li>
+>>>>>>> 1b2d107277bcb721415a894d626bb18503a7ff6d
 
                     <li class="nav__item">
                         <a href="#skills" class="nav__link">
