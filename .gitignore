@@ -2,3 +2,4 @@ secretes
 vendor/
 composer.lock
 composer.json
+vendor.7z
