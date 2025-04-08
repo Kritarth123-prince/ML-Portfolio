@@ -2,8 +2,11 @@ const navLinks = document.querySelectorAll('.nav__link');
 
 navLinks.forEach(link => {
   link.onclick = function () {
+    // Remove 'active-link' class from all nav links
     console.log("hello");
     navLinks.forEach(l => l.classList.remove('active-link'));
+
+    // Add 'active-link' class to the clicked link
     this.classList.add('active-link');
   };
 });

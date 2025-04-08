@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contact_form'])) {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'kritarthranjan2@gmail.com';  // Sender
-            $mail->Password = 'abcd efgh ijkl mnop';  ## app passkey here
+            $mail->Password = 'abcd efgh ijkl mnop';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -109,7 +109,7 @@ $age = $today->diff($dob)->y;
     <!-- Added Header Section -->
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="" class="nav__logo"><i class="uil uil-circle"></i> Kritarth</a>
+            <a href="#" class="nav__logo"><i class="uil uil-circle"></i> Kritarth</a>
 
             <div class="nav__menu" id="nav-menu">
                 <ul class="nav__list">
@@ -124,15 +124,6 @@ $age = $today->diff($dob)->y;
                             <i class="uil uil-user nav__icon"></i> About
                         </a>
                     </li>
-<<<<<<< HEAD
-=======
-
-                    <li class="nav__item">
-                        <a href="#experience" class="nav__link">
-                            <i class="uil uil-briefcase-alt nav__icon"></i> Experience
-                        </a>
-                    </li>
->>>>>>> 1b2d107277bcb721415a894d626bb18503a7ff6d
 
                     <li class="nav__item">
                         <a href="#skills" class="nav__link">
